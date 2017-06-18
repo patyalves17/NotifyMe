@@ -1,20 +1,23 @@
 package com.gmail.reebrando.notifyme.fragments;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.icu.util.Calendar;
-import android.os.Build;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompatExtras;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TimePicker;
 
+
+import com.gmail.reebrando.notifyme.MainActivity;
 import com.gmail.reebrando.notifyme.R;
 
 import butterknife.BindView;
@@ -27,12 +30,8 @@ import butterknife.OnClick;
 
 public class NotificationFragment extends Fragment {
 
-    private Calendar calendar;
-    @BindView(R.id.edInitDay) EditText edInitDay;
-    @BindView(R.id.edInitTime) EditText edInitTime;
-    @BindView(R.id.edRestTime) EditText edRestTime;
-    private int mYear, mMonth, mDay, mHour, mMinute;
-
+    @BindView(R.id.etInterval)
+    TextInputLayout etInterval;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -47,84 +46,30 @@ public class NotificationFragment extends Fragment {
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @OnClick(R.id.btnGetDay)
-    public void getDay(View view){
-        // To Do
-        // Get Current Date
-        calendar = Calendar.getInstance();
-        mYear = calendar.get(Calendar.YEAR);
-        mMonth = calendar.get(Calendar.MONTH);
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this.getActivity(),
-                new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-
-                        edInitDay.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-
-                    }
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @OnClick(R.id.btnGetTime)
-    public void getTime(View view){
-        // Get Current Time
-        calendar = Calendar.getInstance();
-        mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        mMinute = calendar.get(Calendar.MINUTE);
-
-        // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this.getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay,
-                                          int minute) {
-
-                        edInitTime.setText(hourOfDay + ":" + minute);
-                    }
-                }, mHour, mMinute, false);
-        timePickerDialog.show();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @OnClick(R.id.btnGetETA)
-    public void getEta(View view){
-        // Get Current Time
-        calendar = Calendar.getInstance();
-        mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        mMinute = calendar.get(Calendar.MINUTE);
-
-        // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this.getActivity(),
-                new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay,
-                                          int minute) {
-
-                        edRestTime.setText(hourOfDay + ":" + minute);
-                    }
-                }, mHour, mMinute, false);
-        timePickerDialog.show();
-
-    }
 
     @OnClick(R.id.btnGenerate)
     public void generateTimetable(View view){
-        if (edInitTime.getText().toString().isEmpty() || edInitDay.getText().toString().isEmpty() || edRestTime.getText().toString().isEmpty()) {
+        if (etInterval.getEditText().getText().toString().isEmpty()) {
             Snackbar.make(view, R.string.empty_input, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
         else{
-            // TODO: 15/06/17
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(view.getContext())
+                            .setSmallIcon(R.drawable.ic_clock)
+                            .setTicker("New alert")
+                            .setSound(Uri.parse("android.resource://"+getActivity().getPackageName()+"/raw/toasty"))
+                            .setContentTitle("Notifications Example")
+                            .setContentText("This is a test notification");
+
+            Intent notificationIntent = new Intent(view.getContext(), MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(view.getContext(), 0, notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(contentIntent);
+
+            // Add as notification
+            NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, builder.build());
         }
     }
 

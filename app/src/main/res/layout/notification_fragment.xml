@@ -10,72 +10,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/etInterval">
 
             <EditText
-                android:id="@+id/edInitDay"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/initial_day"
-                android:enabled="false"
-                android:layout_weight="1"/>
+                android:hint="@string/interval" />
 
-            <ImageButton
-                android:id="@+id/btnGetDay"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="@dimen/default_padding"
-                android:background="@drawable/ic_calendar" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/edInitTime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/initial_hour"
-                android:enabled="false"
-                android:layout_weight="1"/>
-
-            <ImageButton
-                android:id="@+id/btnGetTime"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="@dimen/default_padding"
-                android:background="@drawable/ic_clock" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/edRestTime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="eta for the bus"
-                android:enabled="false"
-                android:layout_weight="1"/>
-
-            <ImageButton
-                android:id="@+id/btnGetETA"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="@dimen/default_padding"
-                android:background="@drawable/ic_clock" />
-
-        </LinearLayout>
-
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/btnGenerate"

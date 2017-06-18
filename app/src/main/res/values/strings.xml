@@ -12,4 +12,5 @@
     <string name="alarm_msg_one">In</string>
     <string name="alarm_msg_two">seconds...</string>
     <string name="alarm">alarm set</string>
+    <string name="interval">interval</string>
 </resources>
