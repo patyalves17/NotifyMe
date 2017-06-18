@@ -1,23 +1,16 @@
 package com.gmail.reebrando.notifyme.fragments;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
+
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompatExtras;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-
-
-import com.gmail.reebrando.notifyme.MainActivity;
+import com.gmail.reebrando.notifyme.NotificationService;
 import com.gmail.reebrando.notifyme.R;
 
 import butterknife.BindView;
@@ -30,8 +23,10 @@ import butterknife.OnClick;
 
 public class NotificationFragment extends Fragment {
 
-    @BindView(R.id.etInterval)
-    TextInputLayout etInterval;
+
+    @BindView(R.id.etTitle) TextInputLayout etTitle;
+    @BindView(R.id.etMessage) TextInputLayout etMessage;
+    @BindView(R.id.etInterval) TextInputLayout etInterval;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -49,27 +44,25 @@ public class NotificationFragment extends Fragment {
 
     @OnClick(R.id.btnGenerate)
     public void generateTimetable(View view){
-        if (etInterval.getEditText().getText().toString().isEmpty()) {
+        if (etTitle.getEditText().getText().toString().isEmpty() || etMessage.getEditText().getText().toString().isEmpty()|| etInterval.getEditText().getText().toString().isEmpty() ) {
             Snackbar.make(view, R.string.empty_input, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
         else{
-            NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(view.getContext())
-                            .setSmallIcon(R.drawable.ic_clock)
-                            .setTicker("New alert")
-                            .setSound(Uri.parse("android.resource://"+getActivity().getPackageName()+"/raw/toasty"))
-                            .setContentTitle("Notifications Example")
-                            .setContentText("This is a test notification");
+            Intent intent = new Intent(view.getContext(), NotificationService.class);
+            intent.putExtra("interval", Integer.parseInt(etInterval.getEditText().getText().toString()));
+            intent.putExtra("title", etTitle.getEditText().getText().toString());
+            intent.putExtra("message", etMessage.getEditText().getText().toString());
+            view.getContext().startService(intent);
 
-            Intent notificationIntent = new Intent(view.getContext(), MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(view.getContext(), 0, notificationIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(contentIntent);
+            Snackbar.make(view, R.string.reminder, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
 
-            // Add as notification
-            NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.notify(0, builder.build());
+            MainFragment mainFragment = new MainFragment();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_main, mainFragment);
+            transaction.disallowAddToBackStack();
+            transaction.commit();
         }
     }
 

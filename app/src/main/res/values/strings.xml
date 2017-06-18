@@ -13,4 +13,7 @@
     <string name="alarm_msg_two">seconds...</string>
     <string name="alarm">alarm set</string>
     <string name="interval">interval</string>
+    <string name="title">title</string>
+    <string name="message">message</string>
+    <string name="reminder">Reminder created successfully</string>
 </resources>
